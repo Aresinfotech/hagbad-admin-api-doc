@@ -1,0 +1,1095 @@
+swagger: "2.0"
+schemes:
+  - https
+host: hagbad.greysystems.eu
+basePath: /api/v1
+info:
+  version: 1.0.0-beta
+  title: Hagbad Admin Online REST API
+  contact:
+    email: developers@greysystems.eu
+    name: Contact URL
+    url: "http://www.greysystems.eu/#contact"
+  license:
+    name: All Rights reserved GreySystems 2022
+    url: "http://www.greysystems.eu"
+  termsOfService: "https://www.greysystems.eu"
+  x-logo:
+    url: "https://www.hagbad.net/wp-content/themes/moneypool/images/logo.png"
+    background: "#FFFFFF"
+  description: |
+    This page contains the documentation on how to use the Hagbad API.
+
+    **API is in beta version, breaking changes may be introduced before the final release candidate is released**
+
+    # Introduction
+
+    The Hagbad  API is built on top of HTTP:
+    - RESTFul
+    - Predictable resource URLs. 
+    - Accepts and returns JSON in the HTTP body. 
+    - Returns HTTP response codes to indicate errors. 
+
+    You can use your favorite HTTP/REST library for your programming language to consume this API. 
+
+    # The Hagbad System
+    The Hagbad  is an integrated set of APIs to create and manage moneypools created by customers for other customers.
+    There are the differentes modules exposed by this API: 
+
+    * **Catalogs**: This module is used to get the catalog information. 
+    * **Moneypools**: Manage the system moneypool.
+    * **Movements**: Manage the system movement.
+    * **Customers**: Manage the system customer. 
+
+    # Authentication
+    ### Please, note that the customers should already be registered in the system, in order to get access to the system.
+
+    All Hagbad APIs, including this one, use [OpenId Connect](http://openid.net) protocol to authenticate customers. Specifically the security tokens used are JWT tokens. 
+
+    To issue new tokens, you have to use the Hagbad OpenId compliant server located at https://hagbad.greysystems.eu/auth (for more info please check [GreySystems Identity Server Doc](https://grey-systems.github.io/gs-identity-doc/))
+
+    * **User Token**: Gets an  `access_token` issued on behalf of an end-user. To get an user access_token you have to implement the [Authorization Code Flow](https://www.keycloak.org/docs/3.3/server_admin/topics/sso-protocols/oidc.html). 
+
+    **How I use the tokens?**
+     As stated in the introduction, both tokens types are JWT tokens, and you should set that token in the HTTP `Authorization` Header of the API call in this way: 
+
+    ```
+    Authorization: Bearer {the_token}
+    ```
+
+    # Common HTTP Error Responses
+
+    The Rest API uses the following common HTTP status codes to communicate general issues or errors to the clients: 
+
+    * HTTP **400** (Invalid Request): The request provided is invalid (request is not well formed, a mandatory field is not provided, etc..). 
+    * HTTP **403** (Forbidden): You are not allowed to access or update the requested resource. 
+    * HTTP **404** (Not found): The searched item could not be found (the moneypool was not found, etc..). 
+    * HTTP **409** (Conflict): There is a conflict when trying to execute the operation (status change not allowed, etc..). 
+    * HTTP **500** (Internal Server Error): Some internal component has failed to process your request. Please notify about this error to GreySystems team.
+tags:
+  - name: catalogs
+    description: This section explains how to access different the catalogs availables in the system.
+  - name: customers
+    description: Customer management operations.
+  - name: moneypools
+    description: Manage moneypool operation.
+  - name: movements
+    description: Manage movements operation.
+securityDefinitions:
+  JWT:
+    description: "You can obtain a JSON Web Token (`access_token`), using our OpenID Connect Authorizations Server"
+    type: apiKey
+    name: "Authorization: Bearer access_token"
+    in: header
+security:
+  - JWT: []
+paths:
+
+  "/catalog/movement/type":
+    get:
+      tags:
+        - catalogs
+      summary: Get Movement types
+      description: Returns the movement types supported by the system.
+      responses:
+        "200":
+          description: Returns the supported movement types.
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["DEBIT", "CREDIT"]
+        "400":
+          description: "Invalid parameters, response contains detailed error."
+          schema:
+            $ref: "#/definitions/Error"
+            
+  "/customer":
+    post:
+      summary: Search customers.
+      description: |
+        Search customers given some parameters. You will have two different ways to search customers:
+        - SearchCustomerRequest object in the request body.
+      operationId: searchCustomers
+      tags:
+        - customers
+      parameters:
+        - name: Search request parameters.
+          in: body
+          required: false
+          schema:
+            $ref: "#/definitions/SearchCustomerRequest"
+        - name: searchParam
+          in: query
+          required: false
+          type: string
+          description: Search param.
+        - name: page
+          in: query
+          required: false
+          type: "number"
+          format: "int"
+          description: Page number.
+        - name: elementsPerPage
+          in: query
+          required: false
+          type: "number"
+          format: "int"
+          description: Number of elements per page.
+      responses:
+        "200":
+          description: Find one or more Customers matching with the search parameters. Not find any Customer matching with the search parameters (empty array).
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/SearchCustomerResponse"
+        "400":
+          description: "Invalid parameters, response contains detailed error"
+          schema:
+            $ref: "#/definitions/Error"
+            
+  "/customer/{id}/detail":
+    get:
+      summary: Get customer details.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: "number"
+          format: "long"
+          description: The id of the customer
+      description: Return the customer information.
+      operationId: getCustomerDetail
+      tags:
+        - customers
+      responses:
+        "200":
+          description: Returns the profile information of the logged customer.
+          schema:
+            $ref: "#/definitions/CustomerDetail"
+            
+  "/customer/{id}/disable":
+    put:
+      summary: Delete the user's account.
+      description: |
+        Delete the user's account.
+      operationId: customerDisable
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: "number"
+          format: "long"
+          description: The id of the customer
+        - name: DeleteUserAccount
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/DeleteUserAccount"
+      tags:
+        - customers
+      responses:
+        "204":
+          description: The user account has been deleted.
+        "400":
+          description: Invalid Request. message attribute of response contains detailed information about the issue.
+          schema:
+            $ref: "#/definitions/Error" 
+            
+
+  "/movement":
+    post:
+      summary: Search movements.
+      description: Return a list with the movements found by the given criteria
+      operationId: searchMovement
+      parameters:
+        - name: page
+          in: query
+          required: false
+          type: "number"
+          format: "int"
+          description: The requested page.
+        - name: elementsPerPage
+          in: query
+          required: false
+          type: "number"
+          format: "int"
+          description: How many elements per page.
+        - name: Search request parameters.
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/GetMovementRequest"
+      tags:
+        - movements
+      responses:
+        "200":
+          description: Returns the movements found to the given search criteria. Returns an empty list if the partner doesn’t have any movement.
+          schema:
+            $ref: "#/definitions/GetMovementResponse"
+        "400":
+          description: "Invalid parameters, response contains detailed error"
+          schema:
+            $ref: "#/definitions/Error"
+        "404":
+          description: Customer not found.
+          schema:
+            $ref: "#/definitions/Error"
+            
+  "/moneypool":
+    post:
+      summary: Search moneypools.
+      description: |
+        Return a list with the partner moneypools
+      operationId: searchMarketplace
+      tags:
+        - moneypools
+      parameters:
+        - name: search request parameters.
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/SearchMoneypoolRequest"
+        - name: page
+          in: query
+          required: false
+          type: "number"
+          format: "int"
+          description: Page number.
+        - name: elementsPerPage
+          in: query
+          required: false
+          type: "number"
+          format: "int"
+          description: Number of elements per page.
+      responses:
+        "200":
+          description: All opened moneypools in the last month. If no moneypool is already created, you will get an empty list.
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Moneypool"
+              
+  "/moneypool/{id}/detail":
+    get:
+      summary: Get moneypool details by id.
+      description: Get the moneypool complete information.
+      operationId: getMoneypoolDetail
+      tags:
+        - moneypools
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: "number"
+          format: "long"
+          description: The id of the moneypool
+      responses:
+        "200":
+          description: Returns the complete information of the Moneypool.
+          schema:
+            $ref: "#/definitions/MoneypoolDetail"
+        "400":
+          description: "Invalid parameters, response contains detailed error"
+          schema:
+            $ref: "#/definitions/Error"
+        "404":
+          description: Moneypool not found.
+          schema:
+            $ref: "#/definitions/Error"
+            
+definitions:
+  Error:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        description: The error code. This error code should define the error type returned.
+        example: HG-XXXX
+      message:
+        type: string
+        description: The error description. A message that resume the error thrown by the system.
+        example: An error message produced in the backend.
+  Customer:
+    type: object
+    required:
+      - customerId
+      - name
+      - lastname
+      - nickname
+      - mobileNumber
+      - email
+      - referralCode
+      - referralInvitationCode
+      - status
+      - kycStatus
+      - paymentMethod
+    properties:
+      customerId:
+        description: customer identifier. It is only required to update the customer information.
+        type: "number"
+        format: "long"
+        example: 11
+      code:
+        description: Customer code.
+        type: string
+        example: CU123
+      name:
+        description: Customer name.
+        type: string
+        example: Ben
+      lastname:
+        description: Customer last name.
+        type: string
+        example: Simmons
+      nickname:
+        description: Customer nickname.
+        type: string
+        example: BSimmy
+      birthDate:
+        description: Customer birthdate.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd"
+        example: "2021-05-23"
+      mobileNumber:
+        description: Customer mobile number.
+        type: string
+        example: +34666666666
+      referralCode:
+        description: Customer referral code to invite new users.
+        type: string
+        example: BS8321F
+      referralInvitationCode:
+        description: Referral invitation code of the customer who invited you.
+        type: string
+        example: FL8935V
+      email:
+        description: Customer email.
+        type: string
+        example: ben.simmons@test.com
+      status:
+        description: >
+            Customer status:
+             * `ACTIVE` - Active
+             * `INACTIVE` - Inactive
+             * `BLOCKED` - Bloked
+        type: string
+        example: ACTIVE   
+        enum:
+        - ACTIVE
+        - INACTIVE
+        - BLOCKED     
+      kycStatus:
+        type: string
+        description: >
+            Customer KYC status:
+             * `VALIDATED` - Validated
+             * `NOT_VALIDATED` - Not validated.
+             * `BLOCKED` - Bloked.
+        example: VALIDATED
+        enum:
+        - VALIDATED
+        - NOT_VALIDATED
+        - BLOCKED 
+      paymentMethod:
+        description: Customer default payment method
+        type: "string"
+        example: CASH 
+      address:
+        description: Customer address.
+        $ref: "#/definitions/Address"
+  CustomerDetail:
+    type: object
+    required:
+      - customerId
+      - name
+      - lastName
+      - nickname
+      - mobileNumber
+      - email
+      - referralCode
+      - referralInvitationCode
+      - status
+      - kycStatus
+      - paymentMethod
+      - rating
+    properties:
+      customerId:
+        description: The customer identifier.
+        type: "number"
+        format: "long"
+        example: 11
+      name:
+        description: Customer name.
+        type: string
+        example: Ben
+      lastname:
+        description: Customer last name.
+        type: string
+        example: Simmons
+      nickname:
+        description: Customer nickname.
+        type: string
+        example: BSimmy
+      birthDate:
+        description: Customer birthdate.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd"
+        example: "2021-05-23"
+      mobileNumber:
+        description: Customer mobile number.
+        type: string
+        example: +34666666666
+      email:
+        description: Customer email.
+        type: string
+        example: ben.simmons@test.com
+      referralCode:
+        description: Customer referral code to invite new users.
+        type: string
+        example: BS8321F
+      referralInvitationCode:
+        description: Referral invitation code of the customer who invited you.
+        type: string
+        example: FL8935V
+      address:
+        description: Customer address.
+        $ref: "#/definitions/Address"   
+      status:
+        description: >
+            Customer status:
+             * `ACTIVE` - Active
+             * `INACTIVE` - Inactive
+             * `BLOCKED` - Bloked
+        type: string
+        example: ACTIVE   
+        enum:
+        - ACTIVE
+        - INACTIVE
+        - BLOCKED     
+      kycStatus:
+        type: string
+        description: >
+            Customer KYC status:
+             * `VALIDATED` - Validated
+             * `NOT_VALIDATED` - Not validated.
+             * `BLOCKED` - Bloked.
+        example: VALIDATED
+        enum:
+        - VALIDATED
+        - NOT_VALIDATED
+        - BLOCKED   
+      avatarUrls:
+        description: The profile picture urls for different image sizes.
+        $ref: "#/definitions/AvatarUrl"    
+      paymentMethod:
+        description: Customer default payment method
+        type: "string"
+        example: CASH  
+      rating:
+        description: Customer rating. It may take values from 0.0 to 5.0.
+        type: "number"
+        format: "double"
+        example: 2.62  
+  SearchCustomerRequest:
+    type: object
+    properties:
+      name:
+        description: Customer name.
+        type: string
+        example: "Ben"
+      lastname:
+        description: Customer lastname.
+        type: string
+        example: "Simmons"
+      birthDate:
+        description: Customer birthDate.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd"
+        example: "2021-04-24"
+      mobileNumber:
+        description: Customer phone number.
+        type: string
+        example: +34666453433
+      email:
+        description: Customer email.
+        type: string
+        example: ben@simmons.test
+      status:
+        description: >
+            Customer status:
+             * `ACTIVE` - Active
+             * `INACTIVE` - Inactive
+             * `BLOCKED` - Bloked
+        type: string
+        example: ACTIVE   
+        enum:
+        - ACTIVE
+        - INACTIVE
+        - BLOCKED     
+      kycStatus:
+        type: string
+        description: >
+            Customer KYC status:
+             * `VALIDATED` - Validated
+             * `NOT_VALIDATED` - Not validated.
+             * `BLOCKED` - Bloked.
+        example: VALIDATED
+        enum:
+        - VALIDATED
+        - NOT_VALIDATED
+        - BLOCKED
+  SearchCustomerResponse:
+    type: object
+    properties:
+      customers:
+        description: Customers list.
+        type: array
+        items:
+          $ref: "#/definitions/Customer"
+  SearchMoneypoolRequest:
+    type: object
+    required:
+      - startDateFrom
+      - startDateTo
+      - poolCode
+    properties:
+      name:
+        description: Moneypool name.
+        type: string
+        example: "Buy TV"
+      startDateFrom:
+        description: The date from where Moneypool start dates begin.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd"
+        example: "2021-04-23"
+      startDateTo:
+        description: The date where Moneypool start dates end.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd"
+        example: "2021-04-24"
+      type:
+        description: Moneypool type (PUBLIC / PRIVATE).
+        type: string
+        example: PUBLIC
+      poolCode:
+        description: Moneypool code.
+        type: string
+        example: MP1
+      status:
+        description: Status of the Moneypool.
+        type: string
+        example: OPENED
+      amountToSave:
+        description: Amount which every Moneypool component will receive in his collect turn.
+        type: "number"
+        format: "long"
+        example: 1000
+      currency:
+        description: Moneypool currency.
+        type: string
+        example: USD
+      membersRequired:
+        description: Number of Members required.
+        type: "number"
+        format: "int"
+        example: 8
+      paymentFrequency:
+        type: string
+        description: >
+            Frequency of the payments:
+             * `MONTHLY` - Monthly
+             * `BIMONTHLY` - Bimonthly
+             * `BIWEEKLY` - Biweeky
+        example: MONTHLY
+        enum:
+        - MONTHLY
+        - BIMONTHLY
+        - BIWEEKLY
+  
+  Moneypool:
+    type: object
+    required:
+      - id
+      - name
+      - amountToSave
+      - currency
+      - currentMembers
+      - membersRequired
+      - type
+      - status
+      - purpose
+      - rating
+    properties:
+      id:
+        description: Moneypool id.
+        type: "number"
+        format: "long"
+        example: 571418
+      name:
+        description: Moneypool name.
+        type: string
+        example: Helping Hearts
+      amountToSave:
+        description: Amount which every Moneypool component will receive in his collect turn.
+        type: "number"
+        format: "long"
+        example: 1000
+      currency:
+        description: Moneypool currency.
+        type: string
+        example: USD
+      currentMembers:
+        description: Number of Members at this moment in the moneypool.
+        type: "number"
+        format: "int"
+        example: 6
+      membersRequired:
+        description: Number of Members required.
+        type: "number"
+        format: "int"
+        example: 8
+      type:
+        type: string
+        description: >
+            Moneypool type
+             * `PUBLIC` - Public
+             * `PRIVATE` - Private.
+        example: PUBLIC
+        enum:
+        - PUBLIC
+        - PRIVATE
+      status:
+        description: >
+            Status of the Moneypool:
+             * `OPENED` - Opened
+             * `CANCELLED` - Cancelled
+             * `LOCKED` - Locked
+             * `STARTED` - Started
+             * `FINISHED` - Finished
+        type: string      
+        example: OPENED
+        enum:
+        - OPENED
+        - CANCELLED
+        - LOCKED
+        - STARTED
+        - FINISHED
+      rating:
+        description: The moneypool rating. It is obtained from the rating of its members and it may take values from 0.0 to 5.0.
+        type: "number"
+        format: "double"
+        example: 3.7
+  MoneypoolDetail:
+    type: object
+    required:
+      - id
+      - name
+      - poolCode
+      - amountToSave
+      - hostId
+      - hostName
+      - currency
+      - currentMembers
+      - membersRequired
+      - paymentCycle
+      - paymentCyclesTotal
+      - paymentFrequency
+      - startDate
+      - type
+      - status
+      - purpose
+      - rating
+      - currentBalance
+      - members
+      - paymentsCalendar
+    properties:
+      id:
+        description: Moneypool id.
+        type: "number"
+        format: "long"
+        example: 571418
+      name:
+        description: Moneypool name.
+        type: string
+        example: Test moneypool
+      poolCode:
+        description: Moneypool code.
+        type: string
+        example: MP1
+      hostId:
+        description: The moneypool host id.
+        type: "number"
+        format: "long"
+        example: 12
+      hostName:
+        description: The moneypool host name.
+        type: string
+        example: Pep Mancini
+      amountToSave:
+        description: Amount which every Moneypool component will receive in his collect turn.
+        type: "number"
+        format: "long"
+        example: 1000
+      currency:
+        description: Moneypool currency.
+        type: string
+        example: USD
+      currentMembers:
+        description: Number of Members at this moment in the moneypool.
+        type: "number"
+        format: "int"
+        example: 6
+      membersRequired:
+        description: Number of Members required.
+        type: "number"
+        format: "int"
+        example: 8
+      paymentCycle:
+        description: Number of payment cicle.
+        type: "number"
+        format: "int"
+        example: 8
+      paymentCyclesTotal:
+        description: Number of payment cicle total.
+        type: "number"
+        format: "int"
+        example: 8
+      paymentFrequency:
+        type: string
+        description: >
+            Frequency of the payments:
+             * `MONTHLY` - Monthly
+             * `BIMONTHLY` - Bimonthly
+             * `BIWEEKLY` - Biweeky
+        example: MONTHLY
+        enum:
+        - MONTHLY
+        - BIMONTHLY
+        - BIWEEKLY
+      startDate:
+        description: Moneypool start date.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd"
+        example: "2021-04-23"
+      type:
+        type: string
+        description: >
+            Moneypool type
+             * `PUBLIC` - Public
+             * `PRIVATE` - Private.
+        example: PUBLIC
+        enum:
+        - PUBLIC
+        - PRIVATE
+      status:
+        description: >
+            Status of the Moneypool:
+             * `OPENED` - Opened
+             * `CANCELLED` - Cancelled
+             * `LOCKED` - Locked
+             * `STARTED` - Started
+             * `FINISHED` - Finished
+        type: string      
+        example: OPENED
+        enum:
+        - OPENED
+        - CANCELLED
+        - LOCKED
+        - STARTED
+        - FINISHED
+      purpose:
+        description: Purpose of the moneypool.
+        type: string
+        example: BUY TV
+      rating:
+        description: The moneypool rating. It is obtained from the rating of its members and it may take values from 0.0 to 5.0.
+        type: "number"
+        format: "double"
+        example: 2.77  
+      currentBalance:
+        description: Current balance.
+        type: "number"
+        format: "decimal"
+        example: "500"
+      moneypoolView:
+        description: The moneypool view based on the logged user that request the information. Possible values are HOST, MEMBER or CUSTOMER
+        type: string
+        example: HOST
+      members:
+        description: The members of the moneypool.
+        type: array
+        items:
+          $ref: "#/definitions/Member"
+      paymentsCalendar:
+        description: The members of the moneypool.
+        type: array
+        items:
+          $ref: "#/definitions/MoneypoolCalendar"
+  MoneypoolCalendar:
+    type: object
+    required:
+      - position
+      - date
+      - status
+    properties:
+      position:
+        description: Position in the moneypool.
+        type: "number"
+        format: "int"
+        example: 2
+      date:
+        description: The payment date. If the payment is already been done, this field will represent the date in which the payment was executed.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd"
+        example: "2021-04-23"
+      status:
+        description: >
+            The status of the calendar entry for this position:
+             * `PENDING` - Pending
+             * `PAID` - Paid
+        type: string      
+        example: PENDING
+        enum:
+        - PENDING
+        - PAID      
+  Amount:
+    description: The amount and currency of the operation.
+    type: object
+    required:
+      - ccy
+      - value
+    properties:
+      ccy:
+        description: Currency.
+        type: string
+        example: EUR
+      value:
+        description: Amount.
+        type: "number"
+        format: "decimal"
+        example: 300.56
+  Movement:
+    type: object
+    required:
+      - id
+      - amount
+      - type
+      - concept
+      - createdDate
+    properties:
+      id:
+        description: Movement id.
+        type: "number"
+        format: "long"
+        example: 571418
+      amount:
+        $ref: "#/definitions/Amount"
+      type:
+        description: Movement type.
+        type: string
+        example: CREDIT
+      concept:
+        description: Movement concept.
+        type: string
+        example: Credit in moneypool 2
+      transactionId:
+        description: The transaction id related with the movement.
+        type: string
+        example: 12
+      createdDate:
+        description: Movement creation daate.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        example: "2021-04-23T00:00:00+02:00"
+  GetMovementRequest:
+    type: object
+    properties:
+      type:
+        description: The movement type.
+        type: string
+        example: DEBIT
+      amountFrom:
+        description: Search movement with an amount bigger than this value.
+        type: "number"
+        format: "long"
+        example: 100
+      amountTo:
+        description: Search movement with an amount lower than this value.
+        type: "number"
+        format: "int"
+        example: 400
+      dateFrom:
+        description: Search movements created after this date.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        example: "2021-04-23T00:00:00+02:00"
+      dateTo:
+        description: Search movements created before this date.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        example: "2021-04-25T00:00:00+02:00"
+  GetMovementResponse:
+    type: object
+    required:
+      - movements
+    properties:
+      pageNumber:
+        description: The current page number.
+        type: "number"
+        format: "int"
+        example: 0
+      totalSize:
+        description: The total number of movements found.
+        type: "number"
+        format: "int"
+        example: 1
+      totalPages:
+        description: The total pages returned.
+        type: "number"
+        format: "int"
+        example: 1
+      movements:
+        description: List of movement
+        type: array
+        items:
+          $ref: "#/definitions/Movement"
+  Member:
+    type: object
+    required:
+      - memberId    
+      - customerId    
+      - name
+      - lastName
+      - phoneNumber  
+      - status  
+      - host  
+      - joinedDate  
+      - rating   
+      - positions
+    properties:
+      memberId:
+        description: Member id.
+        type: "number"
+        format: "long"
+        example: 571418
+      customerId:
+        description: Customer id.
+        type: "number"
+        format: "long"
+        example: 571423
+      name:
+        description: Customer name.
+        type: string
+        example: "Maikel"
+      lastName:
+        description: Customer lastName.
+        type: string
+        example: "Smith"
+      phoneNumber:
+        description: Customer phone number.
+        type: string
+        example: "+34666323211"  
+      status:
+        description: Member status.
+        type: string
+        example: ACTIVE
+      host:
+        description: Flag which determines if the member is the host of the moneypool.
+        type: boolean
+        example: false
+      joinedDate:
+        description: Joined date.
+        type: string
+        format: date
+        pattern: "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        example: "2021-04-23T00:00:00+02:00"
+      avatarUrls:
+        description: The profile picture urls for different image sizes.
+        $ref: "#/definitions/AvatarUrl"    
+      rating:
+        description: Member rating. It may take values from 0.0 to 5.0.
+        type: "number"
+        format: "double"
+        example: 1.65
+      positions:
+        description: List of position
+        type: array
+        items:
+          $ref: "#/definitions/MemberPosition"
+  MemberPosition:
+    type: object
+    required:
+      - position
+      - status
+    properties:
+      position:
+        description: Position.
+        type: "number"
+        format: "int"
+        example: 1
+      status:
+        description: Member status.
+        type: string
+        example: ACTIVE
+  Address:
+    type: object
+    properties:
+      address1:
+        description: Address first line (street).
+        type: string
+        example: Elm Street, 13
+      address2:
+        description: Address second line (House number, floor...etc.).
+        type: string
+        example: Second floor, door C
+      city:
+        description: City.
+        type: string
+        example: Madrid
+      state:
+        description: State.
+        type: string
+        example: Madrid
+      country:
+        description: Country.
+        type: string
+        example: ES
+      zipCode:
+        description: Postal code.
+        type: string
+        example: 1232F
+  AvatarUrl:
+    type: object
+    properties:
+      large:
+        description: The largest image size url.
+        type: string
+        example: https://avatar-management--avatars.server-location.prod.public.atl-paas.net/initials/MK-5.png?size=48&s=48
+      medium:
+        description: The medium image size url.
+        type: string
+        example: https://avatar-management--avatars.server-location.prod.public.atl-paas.net/initials/MK-5.png?size=24&s=24
+      small:
+        description: The smallest image size url.
+        type: string
+        example: https://avatar-management--avatars.server-location.prod.public.atl-paas.net/initials/MK-5.png?size=16&s=16 
+  DeleteUserAccount:
+    type: object
+    properties:
+      reason:
+        type: string
+        description: "The reason why the user delete the account"
