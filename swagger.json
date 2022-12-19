@@ -176,8 +176,8 @@
     },
     "/customer/{id}/disable": {
       "put": {
-        "summary": "Delete the user's account.",
-        "description": "Delete the user's account.\n",
+        "summary": "Disable customer's account.",
+        "description": "Disable customer's account.\n",
         "operationId": "customerDisable",
         "parameters": [
           {
@@ -202,7 +202,7 @@
         ],
         "responses": {
           "204": {
-            "description": "The user account has been deleted."
+            "description": "The customer account has been disable."
           },
           "400": {
             "description": "Invalid Request. message attribute of response contains detailed information about the issue.",

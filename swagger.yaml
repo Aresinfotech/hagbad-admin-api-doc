@@ -168,9 +168,9 @@ paths:
             $ref: '#/definitions/CustomerDetail'
   '/customer/{id}/disable':
     put:
-      summary: Delete the user's account.
+      summary: Disable customer's account.
       description: |
-        Delete the user's account.
+        Disable customer's account.
       operationId: customerDisable
       parameters:
         - name: id
@@ -188,7 +188,7 @@ paths:
         - customers
       responses:
         '204':
-          description: The user account has been deleted.
+          description: The customer account has been disable.
         '400':
           description: Invalid Request. message attribute of response contains detailed information about the issue.
           schema:
