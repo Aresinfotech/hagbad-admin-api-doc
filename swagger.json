@@ -675,9 +675,13 @@
           "example": "2021-04-24"
         },
         "type": {
-          "description": "Moneypool type (PUBLIC / PRIVATE).",
           "type": "string",
-          "example": "PUBLIC"
+          "description": "Moneypool type\n * `PUBLIC` - Public\n * `PRIVATE` - Private.\n",
+          "example": "PUBLIC",
+          "enum": [
+            "PUBLIC",
+            "PRIVATE"
+          ]
         },
         "poolCode": {
           "description": "Moneypool code.",

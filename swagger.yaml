@@ -573,9 +573,15 @@ definitions:
         pattern: yyyy-MM-dd
         example: '2021-04-24'
       type:
-        description: Moneypool type (PUBLIC / PRIVATE).
         type: string
+        description: |
+          Moneypool type
+           * `PUBLIC` - Public
+           * `PRIVATE` - Private.
         example: PUBLIC
+        enum:
+          - PUBLIC
+          - PRIVATE
       poolCode:
         description: Moneypool code.
         type: string
