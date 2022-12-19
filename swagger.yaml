@@ -33,7 +33,7 @@ info:
     You can use your favorite HTTP/REST library for your programming language to consume this API. 
 
     # The Hagbad System
-    The Hagbad  is an integrated set of APIs to create and manage moneypools created by customers for other customers.
+
     There are the differentes modules exposed by this API: 
 
     * **Catalogs**: This module is used to get the catalog information. 
