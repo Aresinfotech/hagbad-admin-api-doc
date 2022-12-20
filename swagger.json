@@ -89,7 +89,7 @@
     "/customer": {
       "post": {
         "summary": "Search customers.",
-        "description": "Search customers given some parameters. You will have two different ways to search customers:\n- SearchCustomerRequest object in the request body.\n",
+        "description": "Search customers given some parameters. You will have two different ways to search customers:\n- SearchCustomerRequest object in the request body.\n- SearchParam value as Query param. This method will search customers with something similar to the given param in their nickname or email.\n",
         "operationId": "searchCustomers",
         "tags": [
           "customers"
