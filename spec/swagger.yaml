@@ -37,6 +37,7 @@ info:
     There are the differentes modules exposed by this API: 
 
     * **Catalogs**: This module is used to get the catalog information. 
+    * **Partner**: Manage the system partner.
     * **Moneypools**: Manage the system moneypool.
     * **Movements**: Manage the system movement.
     * **Customers**: Manage the system customer. 
@@ -69,6 +70,8 @@ info:
 tags:
   - name: catalogs
     description: This section explains how to access different the catalogs availables in the system.
+  - name: partner management
+    description: Partner management operations.
   - name: customers
     description: Customer management operations.
   - name: moneypools
@@ -103,7 +106,31 @@ paths:
           description: "Invalid parameters, response contains detailed error."
           schema:
             $ref: "#/definitions/Error"
-            
+  
+  "/image/upload":
+    post:
+      tags:
+      - partner management
+      summary: Upload a new partner image
+      consumes:
+       - multipart/form-data
+      description: |  
+        Use this endpoint to upload a new image to the system.
+        Keep in mind that the system will resize and transform the given image in order to adjust to the system requirements.
+        
+        Once the image is uploaded, you will give the image uploaded using the proper Get method
+      operationId: uploadImage
+      parameters:
+        - name: image
+          in: formData
+          required: false
+          type: file
+          description: The partner image to upload.
+      responses:
+        "201":
+          description: The image has been process and uploaded successfully
+        "400":
+          description: Invalid image given
   "/customer":
     post:
       summary: Search customers.
