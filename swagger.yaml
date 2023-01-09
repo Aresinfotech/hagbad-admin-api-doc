@@ -207,11 +207,38 @@ paths:
           type: number
           format: long
           description: The id of the customer
-        - name: DeleteUserAccount
+        - name: ChangeUserRegistrationStatusRequest
           in: body
           required: true
           schema:
-            $ref: '#/definitions/DeleteUserAccount'
+            $ref: '#/definitions/ChangeUserRegistrationStatusRequest'
+      tags:
+        - customers
+      responses:
+        '204':
+          description: The customer account has been disabled.
+        '400':
+          description: Invalid Request. message attribute of response contains detailed information about the issue.
+          schema:
+            $ref: '#/definitions/Error'
+  '/customer/{id}/enable':
+    put:
+      summary: Enable customer's account.
+      description: |
+        Enable customer's account.
+      operationId: customerEnable
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+          format: long
+          description: The id of the customer
+        - name: ChangeUserRegistrationStatusRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ChangeUserRegistrationStatusRequest'
       tags:
         - customers
       responses:
@@ -1116,7 +1143,7 @@ definitions:
         description: The smallest image size url.
         type: string
         example: 'https://avatar-management--avatars.server-location.prod.public.atl-paas.net/initials/MK-5.png?size=16&s=16'
-  DeleteUserAccount:
+  ChangeUserRegistrationStatusRequest:
     type: object
     properties:
       reason:

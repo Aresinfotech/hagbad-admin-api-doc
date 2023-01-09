@@ -223,11 +223,50 @@
             "description": "The id of the customer"
           },
           {
-            "name": "DeleteUserAccount",
+            "name": "ChangeUserRegistrationStatusRequest",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/DeleteUserAccount"
+              "$ref": "#/definitions/ChangeUserRegistrationStatusRequest"
+            }
+          }
+        ],
+        "tags": [
+          "customers"
+        ],
+        "responses": {
+          "204": {
+            "description": "The customer account has been disabled."
+          },
+          "400": {
+            "description": "Invalid Request. message attribute of response contains detailed information about the issue.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/customer/{id}/enable": {
+      "put": {
+        "summary": "Enable customer's account.",
+        "description": "Enable customer's account.\n",
+        "operationId": "customerEnable",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "long",
+            "description": "The id of the customer"
+          },
+          {
+            "name": "ChangeUserRegistrationStatusRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChangeUserRegistrationStatusRequest"
             }
           }
         ],
@@ -1315,7 +1354,7 @@
         }
       }
     },
-    "DeleteUserAccount": {
+    "ChangeUserRegistrationStatusRequest": {
       "type": "object",
       "properties": {
         "reason": {
