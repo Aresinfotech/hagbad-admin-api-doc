@@ -111,8 +111,8 @@ paths:
   "/list":
     get:
       tags:
-      - partner list
-      summary: partner management
+      - partner management
+      summary: Get partner list
       description: |  
         Get list of partners
       operationId: getPartnerList
