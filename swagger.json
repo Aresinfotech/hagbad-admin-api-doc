@@ -90,6 +90,27 @@
         }
       }
     },
+    "/list": {
+      "get": {
+        "tags": [
+          "partner list"
+        ],
+        "summary": "Get partner list",
+        "description": "Get list of partners\n",
+        "operationId": "getPartnerList",
+        "responses": {
+          "200": {
+            "description": "Return one or more Partner. Not find any Partner matching with the search parameters (empty array).",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PartnerConfiguration"
+              }
+            }
+          }
+        }
+      }
+    },
     "/image/upload": {
       "post": {
         "tags": [
@@ -1360,6 +1381,110 @@
         "reason": {
           "type": "string",
           "description": "The reason why the user delete the account"
+        }
+      }
+    },
+    "PaymentMethod": {
+      "type": "object",
+      "required": [
+        "type",
+        "description"
+      ],
+      "properties": {
+        "type": {
+          "description": "The payment method type.",
+          "type": "string",
+          "example": "CASH"
+        },
+        "description": {
+          "description": "The payment method description.",
+          "type": "string",
+          "example": "Cash payment"
+        }
+      }
+    },
+    "PartnerConfiguration": {
+      "type": "object",
+      "required": [
+        "name",
+        "status",
+        "currency",
+        "country",
+        "lowerLimit",
+        "upperLimit",
+        "minMembers",
+        "maxMembers",
+        "decimalAllowed",
+        "numberOfDecimals",
+        "paymentMethods"
+      ],
+      "properties": {
+        "name": {
+          "description": "The partner name.",
+          "type": "string",
+          "example": "Test partner"
+        },
+        "status": {
+          "description": "Partner status:\n * `ACTIVE` - Active\n * `INACTIVE` - Inactive\n * `CANCELLED` - Cancelled\n",
+          "type": "string",
+          "example": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "INACTIVE",
+            "CANCELLED"
+          ]
+        },
+        "currency": {
+          "description": "The partner configured currency. There will be only one currency configured for each partner.",
+          "type": "string",
+          "example": "USD"
+        },
+        "country": {
+          "description": "The partner configured country. There will be only one country configured for each partner.",
+          "type": "string",
+          "example": "ES"
+        },
+        "lowerLimit": {
+          "description": "The minimum value that the amountToSave field can take when creating a moneypool.",
+          "type": "number",
+          "format": "long",
+          "example": 300
+        },
+        "upperLimit": {
+          "description": "The maximum value that the amountToSave field can take when creating a moneypool.",
+          "type": "number",
+          "format": "long",
+          "example": 3000
+        },
+        "minMembers": {
+          "description": "The minimum number of members for whom a moneypool can be created.",
+          "type": "number",
+          "format": "int",
+          "example": 5
+        },
+        "maxMembers": {
+          "description": "The maximum number of members for whom a moneypool can be created.",
+          "type": "number",
+          "format": "int",
+          "example": 15
+        },
+        "decimalAllowed": {
+          "description": "Indicate whether decimal numbers are allowed in the system or not.",
+          "type": "boolean",
+          "example": true
+        },
+        "numberOfDecimals": {
+          "description": "The number of decimal allowed in case they are. If decimals are not allowed this value will be 0.",
+          "type": "number",
+          "format": "int",
+          "example": 2
+        },
+        "paymentMethods": {
+          "description": "The different payment methods configured for this partner.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PaymentMethod"
+          }
         }
       }
     }
