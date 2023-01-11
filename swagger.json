@@ -95,7 +95,7 @@
         "tags": [
           "partner list"
         ],
-        "summary": "Get partner list",
+        "summary": "partner management",
         "description": "Get list of partners\n",
         "operationId": "getPartnerList",
         "responses": {
