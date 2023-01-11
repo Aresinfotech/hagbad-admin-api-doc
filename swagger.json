@@ -93,9 +93,9 @@
     "/list": {
       "get": {
         "tags": [
-          "partner list"
+          "partner management"
         ],
-        "summary": "partner management",
+        "summary": "Get partner list",
         "description": "Get list of partners\n",
         "operationId": "getPartnerList",
         "responses": {
