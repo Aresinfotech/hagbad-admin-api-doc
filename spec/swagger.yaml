@@ -116,6 +116,7 @@ paths:
       description: |  
         Get list of partners
       operationId: getPartnerList
+      responses:
         "200":
           description: Return one or more Partner. Not find any Partner matching with the search parameters (empty array).
           schema:
@@ -1211,8 +1212,8 @@ definitions:
             Partner status:
              * `ACTIVE` - Active
              * `INACTIVE` - Inactive
-             * `BLOCKED` - Cancelled
-        type: CANCELLED
+             * `CANCELLED` - Cancelled
+        type: string
         example: ACTIVE   
         enum:
         - ACTIVE
