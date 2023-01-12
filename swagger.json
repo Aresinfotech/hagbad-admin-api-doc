@@ -127,6 +127,12 @@
               "format": "decimal",
               "example": 150
             }
+          },
+          "404": {
+            "description": "Partner not found.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
