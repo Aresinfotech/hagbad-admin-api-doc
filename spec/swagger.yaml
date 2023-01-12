@@ -108,7 +108,7 @@ paths:
             $ref: "#/definitions/Error"
   
   
-  "/list":
+  "/partner/list":
     get:
       tags:
       - partner management
@@ -123,8 +123,25 @@ paths:
             type: array
             items:
               $ref: "#/definitions/PartnerConfiguration"
+  
+  
+  "/partner/balance":
+    get:
+      tags:
+      - partner management
+      summary: Get partner balance
+      description: |  
+        Get partner balance
+      operationId: getPartnerBalance
+      responses:
+        "200":
+          description: Returns the balance for a current partner. If he does not have any movement yet, the method will return 0
+          schema:
+            type: "number"
+            format: "decimal"
+            example: 150.0
           
-  "/image/upload":
+  "/partner//image/upload":
     post:
       tags:
       - partner management
