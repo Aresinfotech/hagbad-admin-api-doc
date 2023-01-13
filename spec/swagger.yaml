@@ -1162,8 +1162,6 @@ definitions:
         - ACTIVE
         - INACTIVE
         - BLOCKED     
-        type: string
-        example: ACTIVE
       host:
         description: Flag which determines if the member is the host of the moneypool.
         type: boolean
