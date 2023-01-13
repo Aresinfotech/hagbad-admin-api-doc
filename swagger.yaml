@@ -697,9 +697,21 @@ definitions:
         type: string
         example: MP1
       status:
-        description: Status of the Moneypool.
+        description: |
+          Status of the Moneypool:
+           * `OPENED` - Opened
+           * `CANCELLED` - Cancelled
+           * `LOCKED` - Locked
+           * `STARTED` - Started
+           * `FINISHED` - Finished
         type: string
         example: OPENED
+        enum:
+          - OPENED
+          - CANCELLED
+          - LOCKED
+          - STARTED
+          - FINISHED
       amountToSave:
         description: Amount which every Moneypool component will receive in his collect turn.
         type: number
@@ -1127,9 +1139,17 @@ definitions:
         type: string
         example: '+34666323211'
       status:
-        description: Member status.
+        description: |
+          The status of the customer:
+           * `ACTIVE` - Active
+           * `INACTIVE` - Inactive
+           * `BLOCKED` - Bloked
         type: string
         example: ACTIVE
+        enum:
+          - ACTIVE
+          - INACTIVE
+          - BLOCKED
       host:
         description: Flag which determines if the member is the host of the moneypool.
         type: boolean
@@ -1165,9 +1185,19 @@ definitions:
         format: int
         example: 1
       status:
-        description: Member status.
+        description: |
+          Member position status:
+           * `ACTIVE` - Active
+           * `BLOCKED` - Bloked
+           * `PENDING` - Pending
+           * `EXPELLED` - Expelled
         type: string
         example: ACTIVE
+        enum:
+          - ACTIVE
+          - BLOCKED
+          - PENDING
+          - EXPELLED
   Address:
     type: object
     properties:
