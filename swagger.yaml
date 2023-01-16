@@ -775,6 +775,7 @@ definitions:
       - status
       - purpose
       - rating
+      - createdDate
     properties:
       id:
         description: Moneypool id.
@@ -835,6 +836,12 @@ definitions:
         type: number
         format: double
         example: 3.7
+      createdDate:
+        description: Creation date.
+        type: string
+        format: date
+        pattern: 'yyyy-MM-dd''T''HH:mm:ss.SSS'
+        example: '2021-04-23T00:00:00+02:00'
   MoneypoolDetail:
     type: object
     required:
@@ -858,6 +865,7 @@ definitions:
       - currentBalance
       - members
       - paymentsCalendar
+      - createdDate
     properties:
       id:
         description: Moneypool id.
@@ -969,9 +977,9 @@ definitions:
         format: decimal
         example: '500'
       moneypoolView:
-        description: 'The moneypool view based on the logged user that request the information. Possible values are HOST, MEMBER or CUSTOMER'
+        description: The moneypool view based on the logged user that request the information. Possible values are PARTNER or ADMINISTRATOR
         type: string
-        example: HOST
+        example: PARTNER
       members:
         description: The members of the moneypool.
         type: array
@@ -982,6 +990,12 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/MoneypoolCalendar'
+      createdDate:
+        description: Creation date.
+        type: string
+        format: date
+        pattern: 'yyyy-MM-dd''T''HH:mm:ss.SSS'
+        example: '2021-04-23T00:00:00+02:00'
   MoneypoolCalendar:
     type: object
     required:
