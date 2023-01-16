@@ -1361,6 +1361,7 @@ definitions:
   MapCountMoneypollByStatus:     
     type: object
     additionalProperties:
+      description: Moneypool status.
       type: string
     example:
       OPENED: 10
