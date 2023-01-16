@@ -1592,6 +1592,7 @@
     "MapCountMoneypollByStatus": {
       "type": "object",
       "additionalProperties": {
+        "description": "Moneypool status.",
         "type": "string"
       },
       "example": {
