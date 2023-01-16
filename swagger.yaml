@@ -416,14 +416,12 @@ definitions:
       - customerId
       - name
       - lastname
-      - nickname
       - mobileNumber
       - email
-      - referralCode
-      - referralInvitationCode
       - status
       - kycStatus
       - paymentMethod
+      - createdDate
     properties:
       customerId:
         description: customer identifier. It is only required to update the customer information.
@@ -442,10 +440,6 @@ definitions:
         description: Customer last name.
         type: string
         example: Simmons
-      nickname:
-        description: Customer nickname.
-        type: string
-        example: BSimmy
       birthDate:
         description: Customer birthdate.
         type: string
@@ -456,14 +450,6 @@ definitions:
         description: Customer mobile number.
         type: string
         example: 34666666666
-      referralCode:
-        description: Customer referral code to invite new users.
-        type: string
-        example: BS8321F
-      referralInvitationCode:
-        description: Referral invitation code of the customer who invited you.
-        type: string
-        example: FL8935V
       email:
         description: Customer email.
         type: string
@@ -496,9 +482,12 @@ definitions:
         description: Customer default payment method
         type: string
         example: CASH
-      address:
-        description: Customer address.
-        $ref: '#/definitions/Address'
+      createdDate:
+        description: Creation date.
+        type: string
+        format: date
+        pattern: 'yyyy-MM-dd''T''HH:mm:ss.SSS'
+        example: '2021-04-23T00:00:00+02:00'
   CustomerDetail:
     type: object
     required:
@@ -509,17 +498,22 @@ definitions:
       - mobileNumber
       - email
       - referralCode
-      - referralInvitationCode
       - status
       - kycStatus
       - paymentMethod
       - rating
+      - createdDate
     properties:
       customerId:
         description: The customer identifier.
         type: number
         format: long
         example: 11
+      code:
+        description: The customer code.
+        type: string
+        format: null
+        example: C21
       name:
         description: Customer name.
         type: string
@@ -593,6 +587,12 @@ definitions:
         type: number
         format: double
         example: 2.62
+      createdDate:
+        description: Creation date.
+        type: string
+        format: date
+        pattern: 'yyyy-MM-dd''T''HH:mm:ss.SSS'
+        example: '2021-04-23T00:00:00+02:00'
   SearchCustomerRequest:
     type: object
     properties:

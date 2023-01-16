@@ -521,14 +521,12 @@
         "customerId",
         "name",
         "lastname",
-        "nickname",
         "mobileNumber",
         "email",
-        "referralCode",
-        "referralInvitationCode",
         "status",
         "kycStatus",
-        "paymentMethod"
+        "paymentMethod",
+        "createdDate"
       ],
       "properties": {
         "customerId": {
@@ -552,11 +550,6 @@
           "type": "string",
           "example": "Simmons"
         },
-        "nickname": {
-          "description": "Customer nickname.",
-          "type": "string",
-          "example": "BSimmy"
-        },
         "birthDate": {
           "description": "Customer birthdate.",
           "type": "string",
@@ -568,16 +561,6 @@
           "description": "Customer mobile number.",
           "type": "string",
           "example": 34666666666
-        },
-        "referralCode": {
-          "description": "Customer referral code to invite new users.",
-          "type": "string",
-          "example": "BS8321F"
-        },
-        "referralInvitationCode": {
-          "description": "Referral invitation code of the customer who invited you.",
-          "type": "string",
-          "example": "FL8935V"
         },
         "email": {
           "description": "Customer email.",
@@ -609,9 +592,12 @@
           "type": "string",
           "example": "CASH"
         },
-        "address": {
-          "description": "Customer address.",
-          "$ref": "#/definitions/Address"
+        "createdDate": {
+          "description": "Creation date.",
+          "type": "string",
+          "format": "date",
+          "pattern": "yyyy-MM-dd'T'HH:mm:ss.SSS",
+          "example": "2021-04-23T00:00:00+02:00"
         }
       }
     },
@@ -625,11 +611,11 @@
         "mobileNumber",
         "email",
         "referralCode",
-        "referralInvitationCode",
         "status",
         "kycStatus",
         "paymentMethod",
-        "rating"
+        "rating",
+        "createdDate"
       ],
       "properties": {
         "customerId": {
@@ -637,6 +623,12 @@
           "type": "number",
           "format": "long",
           "example": 11
+        },
+        "code": {
+          "description": "The customer code.",
+          "type": "string",
+          "format": null,
+          "example": "C21"
         },
         "name": {
           "description": "Customer name.",
@@ -718,6 +710,13 @@
           "type": "number",
           "format": "double",
           "example": 2.62
+        },
+        "createdDate": {
+          "description": "Creation date.",
+          "type": "string",
+          "format": "date",
+          "pattern": "yyyy-MM-dd'T'HH:mm:ss.SSS",
+          "example": "2021-04-23T00:00:00+02:00"
         }
       }
     },
