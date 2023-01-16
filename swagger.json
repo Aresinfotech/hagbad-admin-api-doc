@@ -137,7 +137,7 @@
         }
       }
     },
-    "/partner//image/upload": {
+    "/partner/image/upload": {
       "post": {
         "tags": [
           "partner management"
@@ -471,6 +471,24 @@
             "description": "Moneypool not found.",
             "schema": {
               "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/moneypool/count-by-status": {
+      "get": {
+        "summary": "Count moneypool group by status.",
+        "description": "Count moneypool group by status.",
+        "operationId": "countMoneypoolByStatus",
+        "tags": [
+          "moneypools"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the number of moneypools grouped by states.",
+            "schema": {
+              "$ref": "#/definitions/MapCountMoneypollByStatus"
             }
           }
         }
@@ -1569,6 +1587,16 @@
             "$ref": "#/definitions/PaymentMethod"
           }
         }
+      }
+    },
+    "MapCountMoneypollByStatus": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "example": {
+        "OPENED": 10,
+        "STARTER": 4
       }
     }
   }
