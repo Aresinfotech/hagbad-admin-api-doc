@@ -169,6 +169,25 @@ paths:
           description: The image has been process and uploaded successfully
         "400":
           description: Invalid image given
+          
+  "/partner/image":
+    get:
+      tags:
+      - partner management
+      summary: Get partner image
+      description: Get partner image
+      operationId: getImage
+      responses:
+        "200":
+          description: Return partner image
+            description: The picture urls for different image sizes.
+          schema:
+            $ref: "#/definitions/AvatarUrl"
+        "404":
+          description: Partner not found.
+          schema:
+            $ref: "#/definitions/Error"
+            
   "/customer":
     post:
       summary: Search customers.
@@ -619,7 +638,7 @@ definitions:
         - NOT_VALIDATED
         - BLOCKED   
       avatarUrls:
-        description: The profile picture urls for different image sizes.
+        description: The picture urls for different image sizes.
         $ref: "#/definitions/AvatarUrl"    
       paymentMethod:
         description: Customer default payment method
