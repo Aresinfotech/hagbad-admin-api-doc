@@ -179,8 +179,7 @@ paths:
       operationId: getImage
       responses:
         "200":
-          description: Return partner image
-            description: The picture urls for different image sizes.
+          description: The picture urls for different image sizes.
           schema:
             $ref: "#/definitions/AvatarUrl"
         "404":
@@ -574,7 +573,6 @@ definitions:
       code:
         description: The customer code.
         type: string
-        format: 
         example: "C21"
       name:
         description: Customer name.
