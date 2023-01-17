@@ -333,6 +333,49 @@
         }
       }
     },
+    "/customer/{id}/moneypool": {
+      "get": {
+        "summary": "Get customer moneypools.",
+        "description": "Return a list with the customer moneypools, either as host or member.",
+        "operationId": "getCustomerMoneypools",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "long",
+            "description": "The id of the customer"
+          }
+        ],
+        "tags": [
+          "customers"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the moneypools of the given customer. Returns an empty list if the customer doesn’t have any movement.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CustomerMoneypool"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters, response contains detailed error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Customer not found.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/movement": {
       "post": {
         "summary": "Search movements.",
@@ -1613,6 +1656,83 @@
       "example": {
         "OPENED": 10,
         "STARTER": 4
+      }
+    },
+    "CustomerMoneypool": {
+      "type": "object",
+      "required": [
+        "moneypoolId",
+        "moneypoolName",
+        "hostName",
+        "moneypoolStatus",
+        "isHost",
+        "customerStatus",
+        "joinedDate",
+        "positions"
+      ],
+      "properties": {
+        "moneypoolId": {
+          "description": "Moneypool id.",
+          "type": "number",
+          "format": "long",
+          "example": 571418
+        },
+        "moneypoolName": {
+          "description": "Moneypool name.",
+          "type": "string",
+          "example": "Helping Hearts"
+        },
+        "hostName": {
+          "description": "Host name.",
+          "type": "string",
+          "example": "John Simmons"
+        },
+        "moneypoolStatus": {
+          "description": "Status of the Moneypool:\n * `OPENED` - Opened\n * `CANCELLED` - Cancelled\n * `LOCKED` - Locked\n * `STARTED` - Started\n * `FINISHED` - Finished\n",
+          "type": "string",
+          "example": "OPENED",
+          "enum": [
+            "OPENED",
+            "CANCELLED",
+            "LOCKED",
+            "STARTED",
+            "FINISHED"
+          ]
+        },
+        "isHost": {
+          "description": "Specifies if the customer is the host of this moneypool.",
+          "type": "boolean",
+          "example": true
+        },
+        "customerStatus": {
+          "description": "The status of the customer in this moneypool:\n * `ACTIVE` - Active\n * `INACTIVE` - Inactive\n * `BLOCKED` - Bloked\n",
+          "type": "string",
+          "example": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "INACTIVE",
+            "BLOCKED"
+          ]
+        },
+        "joinedDate": {
+          "description": "The date the customer joined the moneypool.",
+          "type": "string",
+          "format": "date",
+          "pattern": "yyyy-MM-dd",
+          "example": "2021-04-23"
+        },
+        "positions": {
+          "description": "The customer positions in this moneypool.",
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "int"
+          },
+          "example": [
+            2,
+            4
+          ]
+        }
       }
     }
   }
