@@ -587,7 +587,7 @@
       "required": [
         "customerId",
         "name",
-        "lastname",
+        "lastName",
         "mobileNumber",
         "email",
         "status",
@@ -612,7 +612,7 @@
           "type": "string",
           "example": "Ben"
         },
-        "lastname": {
+        "lastName": {
           "description": "Customer last name.",
           "type": "string",
           "example": "Simmons"
@@ -701,7 +701,7 @@
           "type": "string",
           "example": "Ben"
         },
-        "lastname": {
+        "lastName": {
           "description": "Customer last name.",
           "type": "string",
           "example": "Simmons"
@@ -805,7 +805,7 @@
           "type": "string",
           "example": "Ben"
         },
-        "lastname": {
+        "lastName": {
           "description": "Customer lastname.",
           "type": "string",
           "example": "Simmons"
