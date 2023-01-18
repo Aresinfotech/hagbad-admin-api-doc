@@ -293,7 +293,7 @@ paths:
         - customers
       responses:
         '204':
-          description: The customer account has been disabled.
+          description: The customer account has been enabled.
         '400':
           description: Invalid Request. message attribute of response contains detailed information about the issue.
           schema:
