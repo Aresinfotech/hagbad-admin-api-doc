@@ -327,6 +327,18 @@ paths:
           description: Customer not found.
           schema:
             $ref: '#/definitions/Error'
+  /customer/count-registered:
+    get:
+      summary: Count registered customer.
+      description: Count registered customer.
+      operationId: countRegisteredCustomer
+      tags:
+        - customers
+      responses:
+        '200':
+          description: Returns the total number of registered customers and the total number of registered customers in the last 30 days.
+          schema:
+            $ref: '#/definitions/MapCountCustomerRegistered'
   /movement:
     post:
       summary: Search movements.
@@ -1411,6 +1423,14 @@ definitions:
     example:
       OPENED: 10
       STARTER: 4
+  MapCountCustomerRegistered:
+    type: object
+    additionalProperties:
+      description: Count.
+      type: string
+    example:
+      TOTAL: 10
+      LAST-30-DAYS: 4
   CustomerMoneypool:
     type: object
     required:
