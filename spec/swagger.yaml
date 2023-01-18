@@ -669,7 +669,7 @@ definitions:
         description: Customer name.
         type: string
         example: "Ben"
-      lastname:
+      lastName:
         description: Customer lastname.
         type: string
         example: "Simmons"
