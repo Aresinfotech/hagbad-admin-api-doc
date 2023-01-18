@@ -476,7 +476,7 @@ definitions:
     required:
       - customerId
       - name
-      - lastname
+      - lastName
       - mobileNumber
       - email
       - status
@@ -497,7 +497,7 @@ definitions:
         description: Customer name.
         type: string
         example: Ben
-      lastname:
+      lastName:
         description: Customer last name.
         type: string
         example: Simmons
@@ -578,7 +578,7 @@ definitions:
         description: Customer name.
         type: string
         example: Ben
-      lastname:
+      lastName:
         description: Customer last name.
         type: string
         example: Simmons
