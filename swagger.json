@@ -1777,13 +1777,8 @@
           "description": "The customer positions in this moneypool.",
           "type": "array",
           "items": {
-            "type": "number",
-            "format": "int"
-          },
-          "example": [
-            2,
-            4
-          ]
+            "$ref": "#/definitions/MemberPosition"
+          }
         }
       }
     }
