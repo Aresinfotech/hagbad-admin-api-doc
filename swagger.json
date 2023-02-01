@@ -3,7 +3,7 @@
   "schemes": [
     "https"
   ],
-  "host": "hagbad.greysystems.eu",
+  "host": "febno.greysystems.eu",
   "basePath": "/admin/api/v1",
   "info": {
     "version": "1.0.0-beta",
