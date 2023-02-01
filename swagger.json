@@ -4,7 +4,7 @@
     "https"
   ],
   "host": "hagbad.greysystems.eu",
-  "basePath": "/api/v1",
+  "basePath": "/admin/api/v1",
   "info": {
     "version": "1.0.0-beta",
     "title": "Hagbad Admin Online REST API",
