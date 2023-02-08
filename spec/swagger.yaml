@@ -1,4 +1,4 @@
-swagger: "2.0"
+swagger: "3.1.0"
 schemes:
   - https
 host: hagbad.greysystems.eu
@@ -11,7 +11,7 @@ info:
     name: Contact URL
     url: "http://www.greysystems.eu/#contact"
   license:
-    name: All Rights reserved GreySystems 2022
+    name: All Rights reserved GreySystems 2023
     url: "http://www.greysystems.eu"
   termsOfService: "https://www.greysystems.eu"
   x-logo:
@@ -22,7 +22,24 @@ info:
 
     **API is in beta version, breaking changes may be introduced before the final release candidate is released**
 
-    # Introduction
+    # About the Hagbad Admin API
+
+    This is the technical documentation for the IT team in charge of integrating Hagbad Moneypool System with the admin front ends.
+
+    The Hagbad admin API allows to search and manage the different Hagbad System's resources. With this API you can manage customers, moneypools, etc.
+
+    This documentation is divided into several chapter. Each chapter contains the resources regarding with the module that it belongs to.
+    
+    The table below resumes those API's chapters:
+
+    | Operation | Description | API Owner |
+    |-----|-----|-------|
+    | **Authentication** |  Get authorization to use some API's resources. | Hagbad IT Team |
+    | **Catalogs** | This module is used to get the catalog information | Hagbad IT Team |
+    | **Partner** | Manage the system partner | Hagbad IT Team |
+    | **Moneypools** | Manage the system moneypool | Hagbad IT Team |
+    | **Movements** | Manage the system movement | Hagbad IT Team |
+    | **Customers** | Manage the system customer | Hagbad IT Team |
 
     The Hagbad  API is built on top of HTTP:
     - RESTFul
@@ -32,31 +49,49 @@ info:
 
     You can use your favorite HTTP/REST library for your programming language to consume this API. 
 
-    # The Hagbad System
-    
-    There are the differentes modules exposed by this API: 
-
-    * **Catalogs**: This module is used to get the catalog information. 
-    * **Partner**: Manage the system partner.
-    * **Moneypools**: Manage the system moneypool.
-    * **Movements**: Manage the system movement.
-    * **Customers**: Manage the system customer. 
-
     # Authentication
-    ### Please, note that the customers should already be registered in the system, in order to get access to the system.
 
-    All Hagbad APIs, including this one, use [OpenId Connect](http://openid.net) protocol to authenticate customers. Specifically the security tokens used are JWT tokens. 
+    All Hagbad Admin API use [oauth2](https://www.rfc-editor.org/rfc/rfc6749) framework to authenticate and authorize administrator users. 
 
-    To issue new tokens, you have to use the Hagbad OpenId compliant server located at https://hagbad.greysystems.eu/auth (for more info please check [GreySystems Identity Server Doc](https://grey-systems.github.io/gs-identity-doc/))
+    To issue new tokens, you have to use our identity broker published at https://identity-hagbad.greysystems.eu/auth
 
-    * **User Token**: Gets an  `access_token` issued on behalf of an end-user. To get an user access_token you have to implement the [Authorization Code Flow](https://www.keycloak.org/docs/3.3/server_admin/topics/sso-protocols/oidc.html). 
+    The flow that you are use is the one called `Resource Owner Password Credentials`. You can get more information in the [framework specification](https://www.rfc-editor.org/rfc/rfc6749#section-4.3). Please, *request to the Hagbad IT team* the needed credentials and endpoint to authenticate in the system.
 
-    **How I use the tokens?**
-     As stated in the introduction, both tokens types are JWT tokens, and you should set that token in the HTTP `Authorization` Header of the API call in this way: 
+    Once you have been authenticated in the system, you will receive a response that looks like this:
+
+    ```json
+    {
+      "access_token":"A base64 encoded token",
+      "expires_in":300,
+      "refresh_expires_in":600,
+      "refresh_token":"A base64 encoded refresh token",
+      "token_type":"Bearer",
+      "not-before-policy":0,
+      "session_state":"The session state",
+      "scope":"profile email"
+    }
 
     ```
-    Authorization: Bearer {the_token}
-    ```
+
+    ## How I use the access_token?
+      The system will require a valid `access_token` that will be filled in a HTTP header called `Authorization`. Furthermore, it is required to add the word Bearer to this header. Let see a valid `Authorization` header example:
+      ```
+        Authorization: Bearer {access_token}
+      ```
+
+      The `access_token` is a JWT token. You can decode this token using this web tool: [jwt.io](https://jwt.io)
+
+    ## Refreshing the access token
+      As we commented above, the authorization response contains a field called `expires_in`. This field is the amount of second that the `access_token` will be valid. After this time, the `access_token` will be expired and you will receive `401 - Unauthorized` responses.
+
+      You can use the `refresh_token` returned in the authorization response to refresh the `access_token`. One more time, the token refreshing is part of the Oauth2 standard. Check the definition in the [framework specification](https://www.rfc-editor.org/rfc/rfc6749#section-6)
+
+    #### IMPORTANT
+      Both `access_token` and `refresh_token` could be expired. If both are expired the session is killed in the system and it is required to start the process requesting a new `access_token`.
+
+      Check the flowchart above that define the authorization's flow:
+
+      ![Authorization flow image](.images/authorizations/authorization-flow.png)
 
     # Common HTTP Error Responses
 
@@ -67,6 +102,7 @@ info:
     * HTTP **404** (Not found): The searched item could not be found (the moneypool was not found, etc..). 
     * HTTP **409** (Conflict): There is a conflict when trying to execute the operation (status change not allowed, etc..). 
     * HTTP **500** (Internal Server Error): Some internal component has failed to process your request. Please notify about this error to GreySystems team.
+
 tags:
   - name: catalogs
     description: This section explains how to access different the catalogs availables in the system.
@@ -78,16 +114,7 @@ tags:
     description: Manage moneypool operation.
   - name: movements
     description: Manage movements operation.
-securityDefinitions:
-  JWT:
-    description: "You can obtain a JSON Web Token (`access_token`), using our OpenID Connect Authorizations Server"
-    type: apiKey
-    name: "Authorization: Bearer access_token"
-    in: header
-security:
-  - JWT: []
 paths:
-
   "/catalog/movement/type":
     get:
       tags:
