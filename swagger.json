@@ -1331,6 +1331,10 @@
     },
     "GetMovementRequest": {
       "type": "object",
+      "required": [
+        "dateFrom",
+        "dateTo"
+      ],
       "properties": {
         "type": {
           "description": "The movement type.",
